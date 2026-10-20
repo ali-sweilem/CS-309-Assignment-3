@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Table</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            margin: 0;
+            padding: 30px;
+            color: #172033;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px #00000015;
+        }
+
+        h1 {
+            color: #2563eb;
+            text-align: center;
+        }
+
+        #searchInput {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            margin: 15px 0;
+        }
+
+        button {
+            padding: 10px 15px;
+            margin: 0 8px 15px 0;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background: #2563eb;
+            color: white;
+        }
+
+        tbody tr:hover {
+            background: #eff6ff;
+        }
+
+        a {
+            color: #2563eb;
+        }
+
+        #resultCount {
+            color: #64748b;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>People Data Table</h1>
+
+        <p>Search for a person by name, age, or city.</p>
+
+        <input
+            type="text"
+            id="searchInput"
+            placeholder="Search..."
+            aria-label="Search people"
+        >
+
+        <div>
+            <button type="button" id="sortNameBtn">Sort by Name</button>
+            <button type="button" id="sortAgeBtn">Sort by Age</button>
+        </div>
+
+        <p id="resultCount"></p>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Age</th>
+                        <th>City</th>
+                    </tr>
+                </thead>
+
+                <tbody id="tableBody"></tbody>
+            </table>
+        </div>
+
+        <p><a href="index.html">Home</a> | <a href="validation.html">Registration Form</a></p>
+    </div>
+
+    <script>
+        // Array of objects
+        const people = [
+            { name: "Ahmed", age: 22, city: "Cairo" },
+            { name: "Mona", age: 25, city: "Giza" },
+            { name: "Ali", age: 20, city: "Alexandria" },
+            { name: "Sara", age: 23, city: "Cairo" },
+            { name: "Omar", age: 28, city: "Giza" },
+            { name: "Nour", age: 21, city: "Mansoura" },
+            { name: "Youssef", age: 24, city: "Cairo" }
+        ];
+
+        // A separate array lets us sort without changing the original.
+        let displayedPeople = [...people];
+
+        const tableBody = document.getElementById("tableBody");
+        const searchInput = document.getElementById("searchInput");
+        const resultCount = document.getElementById("resultCount");
+
+        // Build the table rows using JavaScript.
+        function displayData(data) {
+            tableBody.replaceChildren();
+
+            data.forEach(function (person) {
+                const row = document.createElement("tr");
+
+                [person.name, person.age, person.city].forEach(function (value) {
+                    const cell = document.createElement("td");
+                    cell.textContent = value;
+                    row.appendChild(cell);
+                });
+
+                tableBody.appendChild(row);
+            });
+
+            resultCount.textContent =
+                "Showing " + data.length + " people";
+        }
+
+        // Filter while the user types.
+        function searchData() {
+            const searchText = searchInput.value.trim().toLowerCase();
+
+            displayedPeople = people.filter(function (person) {
+                return (
+                    person.name.toLowerCase().includes(searchText) ||
+                    String(person.age).includes(searchText) ||
+                    person.city.toLowerCase().includes(searchText)
+                );
+            });
+
+            displayData(displayedPeople);
+        }
+
+        // Sort alphabetically by name.
+        document.getElementById("sortNameBtn").addEventListener("click", function () {
+            displayedPeople.sort(function (a, b) {
+                return a.name.localeCompare(b.name);
+            });
+
+            displayData(displayedPeople);
+        });
+
+        // Sort numerically by age.
+        document.getElementById("sortAgeBtn").addEventListener("click", function () {
+            displayedPeople.sort(function (a, b) {
+                return a.age - b.age;
+            });
+
+            displayData(displayedPeople);
+        });
+
+        searchInput.addEventListener("input", searchData);
+
+        // Display all records when the page opens.
+        displayData(displayedPeople);
+    </script>
+</body>
+</html>
